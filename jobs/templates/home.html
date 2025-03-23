@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block content %}
+<section>
+  <div class="row">
+    <div class="col-md-4 text-center">
+      <div class="bg-white rounded-circle mx-auto d-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+        <i class="fas fa-search fa-3x text-primary"></i>
+      </div>
+      <h4>Find Opportunities</h4>
+      <p class="text-muted">Browse thousands of jobs or post open positions.</p>
+    </div>
+    <div class="col-md-4 text-center">
+      <div class="bg-white rounded-circle mx-auto d-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+        <i class="fas fa-handshake fa-3x text-primary"></i>
+      </div>
+      <h4>Connect & Succeed</h4>
+      <p class="text-muted">Apply for jobs or find the perfect candidate.</p>
+    </div>
+    <div class="col-md-4 text-center">
+      <div class="bg-white rounded-circle mx-auto d-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+        <i class="fas fa-chart-line fa-3x text-primary"></i>
+      </div>
+      <h4>Track Progress</h4>
+      <p class="text-muted">Manage applications and monitor hiring status.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Jobs Section -->
+<section class="my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Featured Jobs</h2>
+    <a href="{% url 'job_listings' %}" class="btn btn-outline-primary">View All Jobs</a>
+  </div>
+  
+  {% if featured_jobs %}
+  <div class="row g-4">
+    {% for job in featured_jobs %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-1">{{ job.title }}</h5>
+          <p class="text-muted mb-3">{{ job.company_name }}</p>
+          <div class="mb-3">
+            <span class="badge bg-light text-dark me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
+            <span class="badge bg-light text-dark"><i class="fas fa-clock me-1"></i>{{ job.job_type }}</span>
+          </div>
+          <p class="card-text">{{ job.description|truncatechars:100 }}</p>
+        </div>
+        <div class="card-footer bg-white border-0">
+          <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5 bg-light rounded">
+    <p class="lead mb-0">Check back soon for featured job listings!</p>
+  </div>
+  {% endif %}
+</section>
+
+<!-- Testimonials -->
+<section class="my-5">
+  <h2 class="text-center mb-4">Success Stories</h2>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="mb-3">
+            <i class="fas fa-quote-left fa-2x text-primary opacity-50"></i>
+          </div>
+          <p class="lead mb-4">"JobConnect helped me find my dream position in just two weeks! The platform was intuitive and the application process was seamless."</p>
+          <div class="d-flex align-items-center">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">JD</div>
+            <div>
+              <h5 class="mb-0">Jane Doe</h5>
+              <p class="text-muted mb-0">Software Developer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="mb-3">
+            <i class="fas fa-quote-left fa-2x text-primary opacity-50"></i>
+          </div>
+          <p class="lead mb-4">"As an employer, JobConnect has streamlined our hiring process. We've found exceptional talent that perfectly matches our company culture."</p>
+          <div class="d-flex align-items-center">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">JS</div>
+            <div>
+              <h5 class="mb-0">John Smith</h5>
+              <p class="text-muted mb-0">HR Director, TechCorp</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="my-5 py-5 bg-light rounded">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-4 mb-4 mb-md-0">
+        <h2 class="display-4 fw-bold text-primary">5000+</h2>
+        <p class="lead">Active Jobs</p>
+      </div>
+      <div class="col-md-4 mb-4 mb-md-0">
+        <h2 class="display-4 fw-bold text-primary">10k+</h2>
+        <p class="lead">Job Seekers</p>
+      </div>
+      <div class="col-md-4">
+        <h2 class="display-4 fw-bold text-primary">2k+</h2>
+        <p class="lead">Companies</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="bg-primary text-white p-5 rounded text-center my-5">
+  <h2 class="mb-4">Ready to Take the Next Step in Your Career?</h2>
+  <p class="lead mb-4">Join thousands of job seekers and employers who trust JobConnect.</p>
+  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+    <a href="{% url 'job_listings' %}" class="btn btn-light btn-lg px-4">Find Jobs</a>
+    {% if not user.is_authenticated %}
+      <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">Sign Up Now</a>
+    {% elif user.employer_profile %}
+      <a href="{% url 'post_job' %}" class="btn btn-outline-light btn-lg px-4">Post a Job</a>
+    {% elif user.is_authenticated %}
+      <a href="{% url 'my_applications' %}" class="btn btn-outline-light btn-lg px-4">My Applications</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

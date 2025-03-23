@@ -1,0 +1,18 @@
+<!-- In your employer_dashboard.html template -->
+{% for job in jobs %}
+<tr>
+    <td>{{ job.title }}</td>
+    <td>{{ job.category }}</td>
+    <td>
+        <span class="badge {% if job.is_active %}bg-success{% else %}bg-danger{% endif %}">
+            {{ job.is_active|yesno:"Active,Inactive" }}
+        </span>
+    </td>
+    <td>
+        <a href="{% url 'toggle_job_status' job.id %}" class="btn btn-sm {% if job.is_active %}btn-warning{% else %}btn-success{% endif %}">
+            {% if job.is_active %}Deactivate{% else %}Activate{% endif %}
+        </a>
+        <!-- Other action buttons -->
+    </td>
+</tr>
+{% endfor %}

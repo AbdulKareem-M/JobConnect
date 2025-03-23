@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Application Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2>Application Details</h2>
+            <span class="badge 
+                {% if application.status == 'applied' %} bg-warning 
+                {% elif application.status == 'under_review' %} bg-info 
+                {% elif application.status == 'shortlisted' %} bg-primary 
+                {% elif application.status == 'interview' %} bg-secondary 
+                {% elif application.status == 'offered' %} bg-success 
+                {% elif application.status == 'hired' %} bg-dark 
+                {% elif application.status == 'rejected' %} bg-danger 
+                {% else %} bg-secondary 
+                {% endif %}">
+                {{ application.get_status_display }}
+            </span>
+        </div>
+        
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h4>Job Details</h4>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Job Title</th>
+                            <td><a href="{% url 'job_detail' application.job.id %}">{{ application.job.title }}</a></td>
+                        </tr>
+                        <tr>
+                            <th>Company</th>
+                            <td>{{ application.job.employer.company_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Location</th>
+                            <td>{{ application.job.location }}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="col-md-6">
+                    <h4>Application Details</h4>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Applicant</th>
+                            <td>{{ application.applicant }}</td>
+                        </tr>
+                        <tr>
+                            <th>Applied On</th>
+                            <td>{{ application.applied_at|date:"F d, Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Last Updated</th>
+                            <td>{{ application.updated_at|date:"F d, Y" }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <h4>Cover Letter</h4>
+                <div class="p-3 bg-light rounded">{{ application.cover_letter|linebreaks }}</div>
+            </div>
+            
+            {% if application.resume %}
+            <div class="mb-4">
+                <h4>Resume</h4>
+                <a href="{{ application.resume.url }}" class="btn btn-outline-primary" target="_blank">
+                    <i class="fas fa-file-pdf"></i> View Resume
+                </a>
+            </div>
+            {% endif %}
+            
+            {% if user.employer_profile %}
+                <div class="mb-4">
+                    <h4>Applicant Information</h4>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ application.applicant.user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone</th>
+                            <td>{{ application.applicant.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Experience</th>
+                            <td>{{ application.applicant.experience|default:"0" }} years</td>
+                        </tr>
+                        <tr>
+                            <th>Skills</th>
+                            <td>{{ application.applicant.skills }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                {% if application.status != 'hired' and application.status != 'rejected' %}
+                <div class="d-flex mt-4">
+                    <form method="post" action="{% url 'update_application_status' application.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="under_review">
+                        <button type="submit" class="btn btn-info me-2">Move to Review</button>
+                    </form>
+
+                    <form method="post" action="{% url 'update_application_status' application.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="shortlisted">
+                        <button type="submit" class="btn btn-primary me-2">Shortlist</button>
+                    </form>
+
+                    <form method="post" action="{% url 'update_application_status' application.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="interview">
+                        <button type="submit" class="btn btn-secondary me-2">Schedule Interview</button>
+                    </form>
+
+                    <form method="post" action="{% url 'update_application_status' application.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="offered">
+                        <button type="submit" class="btn btn-success me-2">Offer Job</button>
+                    </form>
+
+                    <form method="post" action="{% url 'update_application_status' application.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="hired">
+                        <button type="submit" class="btn btn-dark me-2">Mark as Hired</button>
+                    </form>
+
+                    <form method="post" action="{% url 'update_application_status' application.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="rejected">
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </form>
+                </div>
+                {% endif %}
+            {% endif %}
+            
+            <div class="mt-4">
+                <a href="{% url 'manage_applications' application.job.id %}" class="btn btn-primary">Back to Applications</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

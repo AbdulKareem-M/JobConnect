@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Applicant Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Applicant Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Applicant Personal Information -->
+                <div class="col-md-4">
+                    <div class="text-center mb-3">
+                        {% if applicant.profile_picture %}
+                            <img src="{{ applicant.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle" style="max-width: 150px;">
+                        {% else %}
+                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; margin: 0 auto;">
+                                <h1>{{ applicant.user.first_name|first }}{{ applicant.user.last_name|first }}</h1>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="text-center">{{ applicant.user.get_full_name }}</h5>
+                    <p class="text-center text-muted">{{ applicant.current_position|default:"" }}</p>
+                    
+                    <div class="list-group mt-4">
+                        <div class="list-group-item">
+                            <small class="text-muted d-block">Email</small>
+                            <div>{{ applicant.user.email }}</div>
+                        </div>
+                        {% if applicant.phone_number %}
+                        <div class="list-group-item">
+                            <small class="text-muted d-block">Phone</small>
+                            <div>{{ applicant.phone_number }}</div>
+                        </div>
+                        {% endif %}
+                        {% if applicant.location %}
+                        <div class="list-group-item">
+                            <small class="text-muted d-block">Location</small>
+                            <div>{{ applicant.location }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Applicant Professional Information -->
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Professional Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if applicant.bio %}
+                                <p>{{ applicant.bio|linebreaks }}</p>
+                            {% else %}
+                                <p class="text-muted">No professional summary provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Skills</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if applicant.skills %}
+                                <div>
+                                    {% for skill in applicant.skills.split %}
+                                        <span class="badge bg-secondary me-1 mb-1">{{ skill }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">No skills listed.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Education</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if applicant.education %}
+                                <p>{{ applicant.education|linebreaks }}</p>
+                            {% else %}
+                                <p class="text-muted">No education details provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Experience</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if applicant.experience %}
+                                <p>{{ applicant.experience|linebreaks }}</p>
+                            {% else %}
+                                <p class="text-muted">No experience details provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <!-- Application Details -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5>Application Information</h5>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 30%">Position Applied For</th>
+                            <td>{{ application.job.title }}</td>
+                        </tr>
+                        <tr>
+                            <th>Applied On</th>
+                            <td>{{ application.applied_at|date:"F j, Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status</th>
+                            <td>
+                                <span class="badge {% if application.status == 'PENDING' %}bg-warning{% elif application.status == 'REVIEWING' %}bg-info{% elif application.status == 'REJECTED' %}bg-danger{% elif application.status == 'ACCEPTED' %}bg-success{% elif application.status == 'INTERVIEWED' %}bg-primary{% endif %}">
+                                    {{ application.status|title }}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <!-- Resume -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Resume</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if application.resume %}
+                                <a href="{{ application.resume.url }}" class="btn btn-outline-primary" target="_blank">
+                                    <i class="fas fa-file-pdf me-2"></i> View Resume
+                                </a>
+                            {% elif applicant.resume %}
+                                <a href="{{ applicant.resume.url }}" class="btn btn-outline-primary" target="_blank">
+                                    <i class="fas fa-file-pdf me-2"></i> View Resume
+                                </a>
+                            {% else %}
+                                <p class="text-muted">No resume provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Cover Letter -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Cover Letter</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if application.cover_letter %}
+                                <p>{{ application.cover_letter|linebreaks }}</p>
+                            {% else %}
+                                <p class="text-muted">No cover letter provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5>Update Application Status</h5>
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'update_application_status' application.id 'PENDING' %}" class="btn btn-warning">Mark Pending</a>
+                        <a href="{% url 'update_application_status' application.id 'REVIEWING' %}" class="btn btn-info">Mark Reviewing</a>
+                        <a href="{% url 'update_application_status' application.id 'INTERVIEWED' %}" class="btn btn-primary">Mark Interviewed</a>
+                        <a href="{% url 'update_application_status' application.id 'REJECTED' %}" class="btn btn-danger">Reject</a>
+                        <a href="{% url 'update_application_status' application.id 'ACCEPTED' %}" class="btn btn-success">Accept</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <a href="{% url 'manage_applications' application.job.id %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Applications
+        </a>
+        <a href="{% url 'all_applications' %}" class="btn btn-primary">
+            <i class="fas fa-list me-2"></i> All Applications
+        </a>
+    </div>
+</div>
+{% endblock %}

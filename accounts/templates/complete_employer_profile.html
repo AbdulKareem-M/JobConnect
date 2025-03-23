@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Complete Employer Profile - Job Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Complete Your Employer Profile</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        {% for field in form %}
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field.errors }}
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <div class="form-text text-muted">{{ field.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap classes to form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const formInputs = document.querySelectorAll('input, select, textarea');
+        formInputs.forEach(input => {
+            if (input.tagName === 'SELECT') {
+                input.classList.add('form-select');
+            } else if (input.type === 'file') {
+                input.classList.add('form-control');
+            } else if (input.type === 'checkbox') {
+                input.classList.add('form-check-input');
+                // Wrap checkbox in a div with form-check class
+                const parent = input.parentNode;
+                if (parent.tagName === 'LABEL') {
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('form-check');
+                    parent.parentNode.insertBefore(wrapper, parent);
+                    wrapper.appendChild(parent);
+                    parent.classList.add('form-check-label');
+                }
+            } else {
+                input.classList.add('form-control');
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -50,6 +50,9 @@ class JobPosting(models.Model):
     
     def is_expired(self):
         return self.application_deadline < timezone.now().date()
+    
+    def salary_range(self):
+        return f'{self.salary_min} - {self.salary_max}'
 
 class JobApplication(models.Model):
     STATUS_CHOICES = (
