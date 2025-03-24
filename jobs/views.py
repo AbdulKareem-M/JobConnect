@@ -6,7 +6,6 @@ from django.core.paginator import Paginator
 from .models import JobPosting, JobCategory, JobApplication
 from .forms import JobPostingForm, JobApplicationForm
 from accounts.models import EmployerProfile
-from django.http import JsonResponse
 
 def home(request):
     """Home page with featured job listings"""
@@ -228,30 +227,17 @@ def manage_applications(request, job_id):
         'status_choices': JobApplication.STATUS_CHOICES,
     })
 
-@login_required
-def update_application_status(request, application_id):
-    if not hasattr(request.user, 'employer_profile'):
-        messages.error(request, "Only employers can update application status.")
-        return redirect('home')
 
-    application = get_object_or_404(
-        JobApplication, 
-        id=application_id, 
-        job__employer=request.user.employer_profile
-    )
+@login_required
+def update_application_status(request, application_id, status):
+    application = get_object_or_404(JobApplication, id=application_id)
 
     if request.method == "POST":
-        status = request.POST.get("status")
-        valid_statuses = ["applied", "under_review", "shortlisted", "interview", "offered", "hired", "rejected"]
-
-        if status in valid_statuses:
-            application.status = status
-            application.save()
-            messages.success(request, f"Application status updated to {application.get_status_display()}.")
-        else:
-            messages.error(request, "Invalid status update.")
-
-    return redirect("all_applications")
+        application.status = status
+        application.save()
+        messages.success(request, f"Application status updated to {status.capitalize()}")
+    
+    return redirect('view_application', application_id=application_id)
 
 
 
