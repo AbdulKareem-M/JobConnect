@@ -103,6 +103,9 @@ JobConnect is a job portal built with Django that allows employers to post jobs 
 ## Screenshots
 
 ### Home Page
+![JobConnect](screenshots/JobConnect.png)
+
+### Home Page
 ![Home Page](screenshots/home.png)
 
 ### Application Detail
@@ -119,6 +122,9 @@ JobConnect is a job portal built with Django that allows employers to post jobs 
 
 ### Job Seeker Dashboard
 ![Job Seeker Dashboard](screenshots/dashboard_job_seeker.png)
+
+### Job Post View
+![Job Detail View](screenshots/post_job.png)
 
 ### Job Detail View
 ![Job Detail View](screenshots/job_detail.png)
