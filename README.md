@@ -102,7 +102,7 @@ JobConnect is a job portal built with Django that allows employers to post jobs 
 
 ## Screenshots
 
-### Home Page
+### JobConnect
 ![JobConnect](screenshots/JobConnect.gif)
 
 ### Home Page
