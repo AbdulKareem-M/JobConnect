@@ -6,17 +6,24 @@ from django.core.paginator import Paginator
 from .models import JobPosting, JobCategory, JobApplication
 from .forms import JobPostingForm, JobApplicationForm
 from accounts.models import EmployerProfile
+from messaging.models import Message
 
 def home(request):
     """Home page with featured job listings"""
     featured_jobs = JobPosting.objects.filter(is_active=True).order_by('-created_at')[:6]
     job_categories = JobCategory.objects.all()
     
+    unread_messages = 0
+    if request.user.is_authenticated:
+        unread_messages = Message.objects.filter(receiver=request.user, is_read=False).count()
+
     context = {
         'featured_jobs': featured_jobs,
         'job_categories': job_categories,
+        'unread_messages': unread_messages,  # Add unread message count
     }
     return render(request, 'home.html', context)
+
 
 def job_listings(request):
     """Display all job listings with filtering options"""

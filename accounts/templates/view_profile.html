@@ -14,30 +14,32 @@
         <div class="card">
             <div class="card-body text-center">
                 {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle mb-3"
+                    style="max-width: 150px;">
                 {% else %}
-                    <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 150px; height: 150px;">
-                        <span class="display-4 text-secondary">{{ user.username|first|upper }}</span>
-                    </div>
+                <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3"
+                    style="width: 150px; height: 150px;">
+                    <span class="display-4 text-secondary">{{ user.username|first|upper }}</span>
+                </div>
                 {% endif %}
-                
+
                 <h4>{{ user.get_full_name|default:user.username }}</h4>
                 <p class="text-muted">
-                    @{{ user.username }} | 
+                    @{{ user.username }} |
                     {% if profile_type == 'employer' %}Employer{% else %}Job Seeker{% endif %}
                 </p>
-                
+
                 <div class="d-grid gap-2">
                     {% if profile_type == 'employer' %}
-                        <a href="{% url 'complete_employer_profile' %}" class="btn btn-primary">Edit Profile</a>
+                    <a href="{% url 'complete_employer_profile' %}" class="btn btn-primary">Edit Profile</a>
                     {% else %}
-                        <a href="{% url 'complete_job_seeker_profile' %}" class="btn btn-primary">Edit Profile</a>
+                    <a href="{% url 'complete_job_seeker_profile' %}" class="btn btn-primary">Edit Profile</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-8">
         <div class="card mb-4">
             <div class="card-header">
@@ -47,94 +49,62 @@
             </div>
             <div class="card-body">
                 {% if profile_type == 'employer' %}
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Company Name:</div>
-                        <div class="col-md-8">{{ profile.company_name }}</div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Company Name:</div>
+                    <div class="col-md-8">{{ profile.company_name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Industry:</div>
+                    <div class="col-md-8">{{ profile.industry }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Company Size:</div>
+                    <div class="col-md-8">{{ profile.company_size }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Founded:</div>
+                    <div class="col-md-8">{{ profile.founded_year }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Website:</div>
+                    <div class="col-md-8">
+                        {% if profile.website %}
+                        <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a>
+                        {% else %}
+                        Not provided
+                        {% endif %}
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Industry:</div>
-                        <div class="col-md-8">{{ profile.industry }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Company Size:</div>
-                        <div class="col-md-8">{{ profile.company_size }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Founded:</div>
-                        <div class="col-md-8">{{ profile.founded_year }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Website:</div>
-                        <div class="col-md-8">
-                            {% if profile.website %}
-                                <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a>
-                            {% else %}
-                                Not provided
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Location:</div>
-                        <div class="col-md-8">{{ profile.location }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">About:</div>
-                        <div class="col-md-8">{{ profile.company_description|linebreaks }}</div>
-                    </div>
+                </div>
                 {% else %}
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Professional Title:</div>
-                        <div class="col-md-8">{{ profile.professional_title }}</div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Professional Title:</div>
+                    <div class="col-md-8">{{ profile.professional_title }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Experience:</div>
+                    <div class="col-md-8">{{ profile.years_of_experience }} years</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Education:</div>
+                    <div class="col-md-8">{{ profile.education }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Skills:</div>
+                    <div class="col-md-8">
+                        {% if profile.skills %}
+                        {% for skill in profile.skills.split %}
+                        <span class="badge bg-secondary me-1">{{ skill }}</span>
+                        {% endfor %}
+                        {% else %}
+                        Not provided
+                        {% endif %}
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Experience:</div>
-                        <div class="col-md-8">{{ profile.years_of_experience }} years</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Education:</div>
-                        <div class="col-md-8">{{ profile.education }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Skills:</div>
-                        <div class="col-md-8">
-                            {% if profile.skills %}
-                                {% for skill in profile.skills.split %}
-                                    <span class="badge bg-secondary me-1">{{ skill }}</span>
-                                {% endfor %}
-                            {% else %}
-                                Not provided
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Desired Position:</div>
-                        <div class="col-md-8">{{ profile.desired_position }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Desired Location:</div>
-                        <div class="col-md-8">{{ profile.desired_location }}</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Resume:</div>
-                        <div class="col-md-8">
-                            {% if profile.resume %}
-                                <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-file-earmark-pdf"></i> View Resume
-                                </a>
-                            {% else %}
-                                Not uploaded
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">About:</div>
-                        <div class="col-md-8">{{ profile.bio|linebreaks }}</div>
-                    </div>
+                </div>
                 {% endif %}
             </div>
         </div>
-        
-        <div class="card">
+
+        <div class="card mb-4">
             <div class="card-header">
                 <h5 class="card-title mb-0">Contact Information</h5>
             </div>
@@ -147,30 +117,39 @@
                     <div class="col-md-4 fw-bold">Phone:</div>
                     <div class="col-md-8">{{ profile.phone|default:"Not provided" }}</div>
                 </div>
-                {% if profile_type == 'job_seeker' %}
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">LinkedIn:</div>
-                        <div class="col-md-8">
-                            {% if profile.linkedin_profile %}
-                                <a href="{{ profile.linkedin_profile }}" target="_blank">{{ profile.linkedin_profile }}</a>
-                            {% else %}
-                                Not provided
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Portfolio:</div>
-                        <div class="col-md-8">
-                            {% if profile.portfolio_website %}
-                                <a href="{{ profile.portfolio_website }}" target="_blank">{{ profile.portfolio_website }}</a>
-                            {% else %}
-                                Not provided
-                            {% endif %}
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <!-- Messaging Section -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Recent Messages</h5>
+                <a href="{% url 'inbox' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                    <ul class="list-group">
+                        {% for message in messages %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ message.sender.username }}</strong>
+                                        <p class="mb-1">{{ message.content|truncatechars:50 }}</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted d-block">{{ message.sent_at|date:"M d, Y" }}</small>
+                                        <a href="{% url 'view_message' message.id %}" class="btn btn-sm btn-primary">View</a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-info">No new messages.</div>
                 {% endif %}
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}

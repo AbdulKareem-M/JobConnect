@@ -129,66 +129,39 @@
                             </td>
                         </tr>
                     </table>
-                    
-                    <!-- Resume -->
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h5 class="mb-0">Resume</h5>
-                        </div>
-                        <div class="card-body">
-                            {% if application.resume %}
-                                <a href="{{ application.resume.url }}" class="btn btn-outline-primary" target="_blank">
-                                    <i class="fas fa-file-pdf me-2"></i> View Resume
-                                </a>
-                            {% elif applicant.resume %}
-                                <a href="{{ applicant.resume.url }}" class="btn btn-outline-primary" target="_blank">
-                                    <i class="fas fa-file-pdf me-2"></i> View Resume
-                                </a>
-                            {% else %}
-                                <p class="text-muted">No resume provided.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <!-- Cover Letter -->
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h5 class="mb-0">Cover Letter</h5>
-                        </div>
-                        <div class="card-body">
-                            {% if application.cover_letter %}
-                                <p>{{ application.cover_letter|linebreaks }}</p>
-                            {% else %}
-                                <p class="text-muted">No cover letter provided.</p>
-                            {% endif %}
-                        </div>
-                    </div>
                 </div>
             </div>
-            
-            <!-- Action Buttons -->
+
+            <!-- Messaging Section -->
             <div class="row mt-4">
-                <div class="col-12">
-                    <h5>Update Application Status</h5>
-                    <div class="btn-group" role="group">
-                        <a href="{% url 'update_application_status' application.id 'PENDING' %}" class="btn btn-warning">Mark Pending</a>
-                        <a href="{% url 'update_application_status' application.id 'REVIEWING' %}" class="btn btn-info">Mark Reviewing</a>
-                        <a href="{% url 'update_application_status' application.id 'INTERVIEWED' %}" class="btn btn-primary">Mark Interviewed</a>
-                        <a href="{% url 'update_application_status' application.id 'REJECTED' %}" class="btn btn-danger">Reject</a>
-                        <a href="{% url 'update_application_status' application.id 'ACCEPTED' %}" class="btn btn-success">Accept</a>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Chat with Applicant</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="chat-box" class="border rounded p-3 mb-3" style="height: 300px; overflow-y: auto;">
+                                {% for message in messages %}
+                                    <div class="mb-2">
+                                        <strong>{{ message.sender.username }}:</strong>
+                                        <span>{{ message.content }}</span>
+                                        <small class="text-muted d-block">{{ message.sent_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <form method="post" action="{% url 'send_message' applicant.user.id %}">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="text" name="message" class="form-control" placeholder="Type a message..." required>
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="mt-3">
-        <a href="{% url 'manage_applications' application.job.id %}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i> Back to Applications
-        </a>
-        <a href="{% url 'all_applications' %}" class="btn btn-primary">
-            <i class="fas fa-list me-2"></i> All Applications
-        </a>
-    </div>
 </div>
 {% endblock %}
+

@@ -61,68 +61,7 @@
   {% endif %}
 </section>
 
-<!-- Testimonials -->
-<section class="my-5">
-  <h2 class="text-center mb-4">Success Stories</h2>
-  <div class="row g-4">
-    <div class="col-md-6">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body">
-          <div class="mb-3">
-            <i class="fas fa-quote-left fa-2x text-primary opacity-50"></i>
-          </div>
-          <p class="lead mb-4">"JobConnect helped me find my dream position in just two weeks! The platform was intuitive and the application process was seamless."</p>
-          <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">JD</div>
-            <div>
-              <h5 class="mb-0">Jane Doe</h5>
-              <p class="text-muted mb-0">Software Developer</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body">
-          <div class="mb-3">
-            <i class="fas fa-quote-left fa-2x text-primary opacity-50"></i>
-          </div>
-          <p class="lead mb-4">"As an employer, JobConnect has streamlined our hiring process. We've found exceptional talent that perfectly matches our company culture."</p>
-          <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">JS</div>
-            <div>
-              <h5 class="mb-0">John Smith</h5>
-              <p class="text-muted mb-0">HR Director, TechCorp</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Stats Section -->
-<section class="my-5 py-5 bg-light rounded">
-  <div class="container">
-    <div class="row text-center">
-      <div class="col-md-4 mb-4 mb-md-0">
-        <h2 class="display-4 fw-bold text-primary">5000+</h2>
-        <p class="lead">Active Jobs</p>
-      </div>
-      <div class="col-md-4 mb-4 mb-md-0">
-        <h2 class="display-4 fw-bold text-primary">10k+</h2>
-        <p class="lead">Job Seekers</p>
-      </div>
-      <div class="col-md-4">
-        <h2 class="display-4 fw-bold text-primary">2k+</h2>
-        <p class="lead">Companies</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
+<!-- Call to Action with Messages -->
 <section class="bg-primary text-white p-5 rounded text-center my-5">
   <h2 class="mb-4">Ready to Take the Next Step in Your Career?</h2>
   <p class="lead mb-4">Join thousands of job seekers and employers who trust JobConnect.</p>
@@ -134,6 +73,9 @@
       <a href="{% url 'post_job' %}" class="btn btn-outline-light btn-lg px-4">Post a Job</a>
     {% elif user.is_authenticated %}
       <a href="{% url 'my_applications' %}" class="btn btn-outline-light btn-lg px-4">My Applications</a>
+      <a href="{% url 'inbox' %}" class="btn btn-warning btn-lg px-4">
+        Messages {% if unread_messages %} ({{ unread_messages }}) {% endif %}
+      </a>
     {% endif %}
   </div>
 </section>

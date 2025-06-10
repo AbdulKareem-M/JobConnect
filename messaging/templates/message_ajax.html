@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Chat with {{ receiver.username }}</h3>
+    
+    <div id="message-box" class="border p-3" style="height: 400px; overflow-y: scroll;">
+        {% for message in messages %}
+            <div class="{% if message.sender == request.user %}text-end{% else %}text-start{% endif %}">
+                <p class="p-2 {% if message.sender == request.user %}bg-primary text-white{% else %}bg-light{% endif %} rounded">
+                    {{ message.content }}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <form id="chat-form" class="mt-3">
+        {% csrf_token %}
+        <div class="input-group">
+            <textarea name="content" id="chat-message" class="form-control" required></textarea>
+            <button type="submit" class="btn btn-success">Send</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById("chat-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        let messageInput = document.getElementById("chat-message");
+        let messageBox = document.getElementById("message-box");
+
+        fetch("{% url 'send_message' receiver.id %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+                content: messageInput.value,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                let newMessage = document.createElement("div");
+                newMessage.classList.add("text-end");
+                newMessage.innerHTML = `<p class="p-2 bg-primary text-white rounded">${messageInput.value}</p>`;
+                messageBox.appendChild(newMessage);
+                messageBox.scrollTop = messageBox.scrollHeight;
+                messageInput.value = "";
+            }
+        });
+    });
+</script>
+{% endblock %}

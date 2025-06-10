@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Message{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Message from {{ message.sender.username }}</h3>
+    <p><strong>Received on:</strong> {{ message.timestamp|date:"M d, Y H:i" }}</p>
+    <div class="border p-3">
+        <p>{{ message.content }}</p>
+    </div>
+
+    <form method="POST" action="{% url 'send_message' message.sender.id %}" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="replyContent" class="form-label">Reply</label>
+            <textarea name="content" id="replyContent" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Reply</button>
+    </form>
+
+    <a href="{% url 'inbox' %}" class="btn btn-secondary mt-3">Back to Inbox</a>
+</div>
+{% endblock %}

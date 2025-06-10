@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Messages</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <ul class="list-group">
+                {% for user in users %}
+                    <li class="list-group-item">
+                        <a href="#" class="chat-user" data-user-id="{{ user.id }}">{{ user.username }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 id="chat-header">Chat</h5>
+                </div>
+                <div class="card-body" id="chat-box" style="height: 300px; overflow-y: auto;"></div>
+                <div class="card-footer">
+                    <input type="hidden" id="receiver-id">
+                    <textarea class="form-control" id="message-input" placeholder="Type your message..."></textarea>
+                    <button class="btn btn-primary mt-2" id="send-message">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const chatBox = document.getElementById("chat-box");
+    const sendMessageBtn = document.getElementById("send-message");
+    const messageInput = document.getElementById("message-input");
+    let receiverId = null;
+
+    document.querySelectorAll(".chat-user").forEach(user => {
+        user.addEventListener("click", function() {
+            receiverId = this.getAttribute("data-user-id");
+            document.getElementById("receiver-id").value = receiverId;
+            document.getElementById("chat-header").textContent = "Chat with " + this.textContent;
+            loadMessages(receiverId);
+        });
+    });
+
+    function loadMessages(receiverId) {
+        fetch(`/messages/get/${receiverId}/`)
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML = "";
+                data.messages.forEach(msg => {
+                    chatBox.innerHTML += `<div><strong>${msg.sender}:</strong> ${msg.content} <small class="text-muted">${msg.timestamp}</small></div>`;
+                });
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+    }
+
+    sendMessageBtn.addEventListener("click", function() {
+        const message = messageInput.value.trim();
+        if (message && receiverId) {
+            fetch("/messages/send/", {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/x-www-form-urlencoded" },
+                body: `receiver_id=${receiverId}&content=${encodeURIComponent(message)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    chatBox.innerHTML += `<div><strong>You:</strong> ${message} <small class="text-muted">${data.timestamp}</small></div>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    messageInput.value = "";
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
